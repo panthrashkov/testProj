@@ -11,7 +11,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/person", produces = APPLICATION_JSON_VALUE)
 public class PersonController {
 
     private final PersonService personService;
@@ -21,56 +21,49 @@ public class PersonController {
         this.personService = personService;
     }
 
-    /*
-    получить организацию по имени
-    */
+    /**
+     * Получить список всех клиентов
+     * @return List<PersonView> список клиентов
+     */
+    @ApiOperation(value = "api/person/all", nickname = "getAllPerson", httpMethod = "GET")
+    @GetMapping("/all")
+    public List<PersonView> getAllPerson() { return personService.getAllPerson(); }
 
-    @ApiOperation(value = "/api/person/list", nickname = "/api/person/list", httpMethod = "GET")
-    @GetMapping("/api/person/list")
-    public PersonViewList getPersonByName(@RequestParam String name,
-                                              @RequestParam (value = "inn", required=false) Long inn,
-                                              @RequestParam (value = "isActive", required=false) Boolean isActive) {
-        return  personService.getPersonByName(name, inn, isActive);
-    }
-
-    /*
-    получить организацию по ID
-    */
-    @ApiOperation(value = "api/person/{id}", nickname = "api/person/{id}", httpMethod = "GET")
-    @GetMapping("/api/person/{id}")
+    /**
+     * Получить клиента по id
+     * @param id - значение параметра
+     * @return PersonView представление клиента
+     */
+    @ApiOperation(value = "api/person/{id}", nickname = "getPersonById", httpMethod = "GET")
+    @GetMapping("/{id}")
     public PersonView loadById (@PathVariable Long id) {
         return personService.loadById(id);
     }
 
-    /*
-    обновить данные организации
-    */
-    @ApiOperation(value = "update", nickname = "update", httpMethod = "POST")
+    /**
+     * Обновить данные клиента
+     * @param person - представление клиента
+     */
+    @ApiOperation(value = "/api/person/update", nickname = "update", httpMethod = "POST")
     @PostMapping("/api/person/update")
-    public void update(@RequestBody PersonViewUpdate person) {
+    public void update(@RequestBody PersonView person) {
             personService.update(person);
     }
 
-    /*
-    добавить организацию
-    */
-    @ApiOperation(value = "api/person/save", nickname = "api/person/save", httpMethod = "POST")
+    /**
+     * Сохранить нового клиента
+     * @param person - представление клиента
+     */
+    @ApiOperation(value = "api/person/save", nickname = "save", httpMethod = "POST")
     @PostMapping("/api/person/save")
-    public void add( @RequestBody PersonViewSave person){
+    public void add( @RequestBody PersonView person){
         personService.add(person);
     }
 
-
-    /*
-    получить весь список организаций
-    */
-    @ApiOperation(value = "getAllPerson", nickname = "getAllPerson", httpMethod = "GET")
-    @GetMapping("/api/person/all")
-    public List<PersonView> getAllPerson() { return personService.getAllPerson(); }
-
-    /*
-    удалить организацию по ID
-    */
+    /**
+     * Удалить клиента по ID
+     * @param id - id клиента
+     */
     @ApiOperation(value = "deletePerson", nickname = "deletePerson", httpMethod = "POST")
     @PostMapping("/api/person/delete/{id}")
     public void delete(@PathVariable Long id) {

@@ -9,34 +9,35 @@ import java.util.List;
  */
 public interface PersonService {
 
-    /*
-    получить организацию по имени
-    */
-    PersonViewList getPersonByName(String name, Long inn, Boolean isActive);
-
-    /*
-    получить организацию по ID
-    */
+    /**
+     * Получить клиента по id
+     * @param id - значение параметра
+     * @return PersonView представление клиента
+     */
     PersonView loadById(Long id);
 
-    /*
-    обновить данные организации
-    */
-    void update(PersonViewUpdate person) ;
+    /**
+     * Обновить данные клиента
+     * @param person - представление клиента
+     */
+    void update(PersonView person) ;
 
-    /*
-    добавить организацию
-    */
-    void add(PersonViewSave person) ;
+    /**
+     * Сохранить нового клиента
+     * @param person - представление клиента
+     */
+    void add(PersonView person) ;
 
-    /*
-    получить весь список организаций
-    */
+    /**
+     * Получить список всех клиентов
+     * @return List<PersonView> список клиентов
+     */
     List<PersonView> getAllPerson();
 
-    /*
-    удалить организацию по ID
-    */
+    /**
+     * Удалить клиента по ID
+     * @param id - id клиента
+     */
     void delete(Long id);
 
 }

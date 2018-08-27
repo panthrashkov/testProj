@@ -30,34 +30,10 @@ public class PersonServiceImpl implements PersonService {
         this.personDao = personDao;
     }
 
-    /*
-    получить организацию по имени
-    */
 
-    @Override
-    @Transactional
-    public PersonViewList getPersonByName(String name, Long inn, Boolean isActive) {
-        PersonViewList view = new PersonViewList();
-        try {
-            Person personByName = personDao.getPersonByName(name, inn, isActive);
-            view.id = personByName.getId();
-            view.name = personByName.getName();
-            view.isActive = personByName.getIsActive();
-        } catch (EmptyResultDataAccessException e) {
-            if ((inn != null) || (isActive != null)) {
-                throw  new OrgOutException("Организации с такой комбинацией параметров нет");
-            }
-            else {
-                throw  new OrgOutException("Организации с таким именем нет");
-            }
-        }
-        return view;
-    }
-
-    /*
-    получить организацию по ID
-    */
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public PersonView loadById(Long id) {
         PersonView personView = new PersonView();
@@ -66,24 +42,18 @@ public class PersonServiceImpl implements PersonService {
             personView.id = person.getId();
             personView.name = person.getName();
             personView.fullName = person.getSurname();
-            personView.inn = person.getInn();
-            personView.kpp = person.getKpp();
-            personView.urAddress = person.getUrAddress();
-            personView.phone = person.getPhone();
-            personView.isActive = person.getIsActive();
         } catch (EmptyResultDataAccessException e) {
-            throw new OrgOutException("Организации с таким ID нет в базе данных");
+            throw new RuntimeException("Организации с таким ID нет в базе данных");
         }
         return personView;
     }
 
 
-
-    /*
-    обновить данные организации
-    */
+     /**
+     * @inheritDoc
+     */
     @Override
-    public void update(PersonViewUpdate person)  {
+    public void update(PersonView person)  {
         if (person.id == null ) {
             throw new OrganisationValidationException("Поле ID является обязательным параметром");
         }
@@ -127,11 +97,11 @@ public class PersonServiceImpl implements PersonService {
         org.setActive(person.isActive);
     }
 
-    /*
-    добавить организацию
-    */
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void add(PersonViewSave person) {
+    public void add(PersonView person) {
 
         if (person.name == null) {
             throw new OrganisationValidationException("Поле name является обязательным параметром");
@@ -163,9 +133,9 @@ public class PersonServiceImpl implements PersonService {
         personDao.save(ogr);
     }
 
-    /*
-    получить весь список организаций
-    */
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional(readOnly = true)
     public List<PersonView> getAllPerson() {
@@ -190,16 +160,15 @@ public class PersonServiceImpl implements PersonService {
         };
     }
 
-    /*
-    удалить организацию по ID
-    */
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public void delete(Long id) {
         try {
             personDao.delete(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new OrganisationValidationException("Организации с таким ID нет в БД");
+            throw new RuntimeException("Организации с таким ID нет в БД");
         }
     }
 
@@ -208,7 +177,7 @@ public class PersonServiceImpl implements PersonService {
         try {
             aLong = Long.parseLong(a);
         } catch (NumberFormatException e) {
-            throw new OrganisationValidationException("ИНН должен состоять из 10 цифр");
+            throw new RuntimeException("ИНН должен состоять из 10 цифр");
         }
         int count = 1;
         Long b = aLong / 10;
@@ -217,7 +186,7 @@ public class PersonServiceImpl implements PersonService {
             b /= 10;
         }
         if (count != 10) {
-            throw new OrganisationValidationException("ИНН должен состоять из 10 цифр");
+            throw new RuntimeException("ИНН должен состоять из 10 цифр");
         }
         return aLong;
     }
@@ -227,7 +196,7 @@ public class PersonServiceImpl implements PersonService {
         try {
             aLong = Long.parseLong(a);
         } catch (NumberFormatException e) {
-            throw new OrganisationValidationException("КПП должен состоять из 9 цифр");
+            throw new RuntimeException("КПП должен состоять из 9 цифр");
         }
         int count = 1;
         Long b = aLong / 10;
@@ -236,7 +205,7 @@ public class PersonServiceImpl implements PersonService {
             b /= 10;
         }
         if (count != 9) {
-            throw new OrganisationValidationException("КПП должен состоять из 9 цифр");
+            throw new RuntimeException("КПП должен состоять из 9 цифр");
         }
         return aLong;
     }
@@ -246,7 +215,7 @@ public class PersonServiceImpl implements PersonService {
             Long a = Long.parseLong(phone);
             return a;
         } catch (NumberFormatException e) {
-            throw new OrganisationValidationException("Телефон должен состоять из цифр");
+            throw new RuntimeException("Телефон должен состоять из цифр");
         }
     }
 
