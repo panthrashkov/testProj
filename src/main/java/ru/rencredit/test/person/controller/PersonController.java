@@ -45,7 +45,7 @@ public class PersonController {
      * @param person - представление клиента
      */
     @ApiOperation(value = "/api/person/update", nickname = "update", httpMethod = "POST")
-    @PostMapping("/api/person/update")
+    @PostMapping("/update")
     public void update(@RequestBody PersonView person) {
             personService.update(person);
     }
@@ -55,7 +55,7 @@ public class PersonController {
      * @param person - представление клиента
      */
     @ApiOperation(value = "api/person/save", nickname = "save", httpMethod = "POST")
-    @PostMapping("/api/person/save")
+    @PostMapping("/save")
     public void add( @RequestBody PersonView person){
         personService.add(person);
     }
@@ -65,7 +65,7 @@ public class PersonController {
      * @param id - id клиента
      */
     @ApiOperation(value = "deletePerson", nickname = "deletePerson", httpMethod = "POST")
-    @PostMapping("/api/person/delete/{id}")
+    @PostMapping("/delete/{id}")
     public void delete(@PathVariable Long id) {
         personService.delete(id);
     }

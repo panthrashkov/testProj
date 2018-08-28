@@ -7,34 +7,33 @@ import java.util.List;
 
 public interface AccountService {
 
-    /*
-    получить офис по ID организации (с помощью @RequestBody)
-    */
-    List<AccountView> getAccountByOrgId(AccountViewRequest accountViewRequest) ;
-
-    /*
-    получить офис по ID
-    */
-    AccountViewLoadById findById(Long id);
-
-    /*
-    обновить данные офиса
-    */
-    void update(AccountViewLoadById account);
-
-    /*
-    добавить офис
-    */
-    void add(AccountViewSave account);
-
-    /*
-    получить весь список офисов
-    */
-    List<AccountViewLoadById> getAllAccount();
-
-    /*
-    удалить офис по ID
-    */
+    /**
+     * Получить список счетов клиента
+     * @param accountView - представление счета
+     * @return List<AccountView> список представлений счета
+     */
+    List<AccountView> getAccountByOrgId(AccountView accountView);
+    /**
+     * Получить счет по id
+     * @param id - идентификатор счета
+     * @return AccountView - представление счета
+     */
+    AccountView findById(Long id);
+    /**
+     * Обновить счет по id
+     * @param account представление счета
+     */
+    void update(AccountView account);
+    /**
+     * Добавить счет
+     * @param personId - идентификатор клиента
+     * @param accountView - представление счета
+     */
+    void add(Long personId, AccountView accountView);
+    /**
+     * Удалить счет по id
+     * @param id
+     */
     void delete(Long id);
 }
 

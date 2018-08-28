@@ -10,7 +10,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/account", produces = APPLICATION_JSON_VALUE)
 public class AccountController {
 
     private final AccountService accountService;
@@ -19,56 +19,56 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    /*
-    получить офис по ID организации (с помощью @RequestBody)
-    */
-    @ApiOperation(value = "/api/account/list", nickname = "получить офис по ID организации", httpMethod = "POST")
-    @PostMapping("/api/account/list/{orgId}")
-    public List<AccountView> getAccountListByOrgId(@RequestBody AccountViewRequest accountViewRequest ) {
-        return accountService.getAccountByOrgId(accountViewRequest); }
+    /**
+     * Получить список счетов клиента
+     * @param accountView - представление счета
+     * @return List<AccountView> список представлений счета
+     */
+    @ApiOperation(value = "/api/account/list", nickname = "/api/person", httpMethod = "POST")
+    @PostMapping("/api/account/list")
+    public List<AccountView> getAccountListByPersonId(@RequestBody AccountView accountView) {
+        return accountService.getAccountByOrgId(accountView);
+    }
 
-    /*
-    получить офис по ID
-    */
-    @ApiOperation(value = "api/account/{id}", nickname = "получить офис по ID", httpMethod = "GET")
-    @GetMapping("/api/account/{id}")
-    public AccountViewLoadById loadById (@PathVariable Long id) {
+    /**
+     * Получить счет по id
+     * @param id - идентификатор счета
+     * @return AccountView - представление счета
+     */
+    @ApiOperation(value = "/api/account/{id}", nickname = "получить счет по ID", httpMethod = "GET")
+    @GetMapping("/{id}")
+    public AccountView loadById (@PathVariable Long id) {
         return accountService.findById(id);
     }
 
-    /*
-    обновить данные офисa
-    */
-    @ApiOperation(value = "update", nickname = "update", httpMethod = "POST")
-    @PostMapping("/api/account/update")
-    public void update(@RequestBody AccountViewLoadById account) {
+    /**
+     * Обновить счет по id
+     * @param account представление счета
+     */
+    @ApiOperation(value = "/api/account/update", nickname = "update", httpMethod = "POST")
+    @PostMapping("/update")
+    public void update(@RequestBody AccountView account) {
         accountService.update(account);
     }
 
-    /*
-    добавить офис
-    */
+    /**
+     * Добавить счет
+     * @param personId - идентификатор клиента
+     * @param accountView - представление счета
+     */
     @ApiOperation(value = "api/account/save", nickname = "api/account/save",
             httpMethod = "POST")
-    @PostMapping("/api/account/save")
-    public void add( @RequestBody AccountViewSave accountViewSave) {
-        accountService.add(accountViewSave);
+    @PostMapping("/save")
+    public void add( @PathVariable Long personId, @RequestBody AccountView accountView) {
+        accountService.add(personId, accountView);
     }
 
-    /*
-    получить весь список офисов
-    */
-    @ApiOperation(value = "getAllAccount", nickname = "getAllAccount", httpMethod = "GET")
-    @GetMapping("/api/account/all")
-    public List<AccountViewLoadById> getAllAccount() {
-        return accountService.getAllAccount();
-    }
-
-    /*
-    удалить офис по ID
-    */
-    @ApiOperation(value = "deleteAccount", nickname = "deleteAccount", httpMethod = "POST")
-    @PostMapping("/api/account/delete/{id}")
+    /**
+     * Удалить счет по id
+     * @param id
+     */
+    @ApiOperation(value = "/api/account/delete/{id}", nickname = "deleteAccount", httpMethod = "POST")
+    @PostMapping("/delete/{id}")
     public void delete(@PathVariable Long id) {
         accountService.delete(id);
     }

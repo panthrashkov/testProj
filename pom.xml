@@ -135,7 +135,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.bellintegrator.practice.Application</mainClass>
+                    <mainClass>ru.rencredit.test.Application</mainClass>
                     <jvmArguments>
                         -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,urAddress=5005
                     </jvmArguments>

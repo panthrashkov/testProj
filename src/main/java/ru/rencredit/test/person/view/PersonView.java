@@ -2,6 +2,8 @@ package ru.rencredit.test.person.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Date;
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonView {
@@ -10,29 +12,10 @@ public class PersonView {
 
     public String name;
 
-    public String fullName;
+    public String secondName;
 
-    public Long inn;
+    public Long surname;
 
-    public Long kpp;
+    public Date birthDate;
 
-    public String urAddress;
-
-    public Long phone;
-
-    public Boolean isActive;
-
-    @Override
-    public String toString() {
-        return "UserView{" +
-                "id=" + id +
-                ", Name='" + name + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", inn=" + inn +
-                ", kpp=" + kpp +
-                ", urAddress='" + urAddress + '\'' +
-                ", phoneAccount=" + phone +
-                ", isActive=" + isActive +
-                '}';
-    }
 }

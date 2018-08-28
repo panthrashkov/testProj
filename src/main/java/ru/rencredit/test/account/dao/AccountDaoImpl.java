@@ -3,13 +3,13 @@ package ru.rencredit.test.account.dao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rencredit.test.account.model.Account;
-import ru.rencredit.test.account.view.AccountView;
 import ru.rencredit.test.person.model.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,22 +22,21 @@ public class AccountDaoImpl implements AccountDao {
         this.em = em;
     }
 
-    /*
-    получить офисы по ID организации
-    */
-    @Override
-    public List<Account> getAccountByOrgId(AccountView accountViewRequest) {
-        return loadByCriteria(accountViewRequest);
+    /**
+     * @inheritDoc
+     */
+    public List<Account> getAccountFiltredList(Account account) {
+        return loadByCriteria(Account account);
     }
 
-    public List<Account> loadByCriteria(AccountView accountViewRequest) {
-        CriteriaQuery<Account> criteria = buildCriteria(accountViewRequest.orgId, accountViewRequest.name,
-                                            accountViewRequest.phoneAccount, accountViewRequest.isActive);
+    public List<Account> loadByCriteria(Account account) {
+        CriteriaQuery<Account> criteria = buildCriteria(account.getPerson(), account.getName(),
+                account.getBalance(), account.getCurrency());
         TypedQuery<Account> query = em.createQuery(criteria);
         return query.getResultList();
     }
 
-    private CriteriaQuery<Account> buildCriteria(Long orgId, String name, String phoneAccount, Boolean isActive) {
+    private CriteriaQuery<Account> buildCriteria(Person person, String name, BigDecimal phoneAccount, String isActive) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Account> cq = builder.createQuery(Account.class);
         CriteriaBuilder qb = em.getCriteriaBuilder();
@@ -45,7 +44,7 @@ public class AccountDaoImpl implements AccountDao {
         Root<Person> personRoot = cq.from(Person.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(qb.equal(personRoot.get("id"), orgId));
+        predicates.add(qb.equal(personRoot.get("id"), person.getId()));
 
         Join<Person, Account> join = personRoot.join("accounts");
 
@@ -84,11 +83,7 @@ public class AccountDaoImpl implements AccountDao {
     /*
     получить список всех счето
      */
-    @Override
-    public List<Account> getAllAccount() {
-        TypedQuery<Account> query = em.createQuery("SELECT p FROM Account p", Account.class);
-        return query.getResultList();
-    }
+
 
     @Override
     public void delete(Long id) {

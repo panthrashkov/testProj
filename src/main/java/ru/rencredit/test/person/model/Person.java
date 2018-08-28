@@ -29,7 +29,10 @@ public class Person {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "full_Name")
+    @Column(name = "second_name")
+    private String secondName;
+
+    @Column(name = "surname")
     private String surname;
 
     @Column(name = "birthday")

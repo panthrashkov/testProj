@@ -3,6 +3,8 @@ package ru.rencredit.test.account.view;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+
 public class AccountView {
 
     @ApiModelProperty(hidden = true)
@@ -10,21 +12,16 @@ public class AccountView {
 
     public String name;
 
-    public boolean isActive;
+    public BigDecimal balance;
+
+    public String currency;
 
 
-    public AccountView(Long id, String name, boolean isActive) {
+    public AccountView(Long id, String name, BigDecimal balance, String currency) {
         this.id = id;
         this.name = name;
-        this.isActive = isActive;
+        this.balance = balance;
+        this.currency = currency;
     }
 
-    @Override
-    public String toString() {
-        return "AccountView{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", isActive=" + isActive +
-                '}';
-    }
 }
