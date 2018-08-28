@@ -20,9 +20,6 @@ public class Person {
     @Column(name = "Id")
     private Long id;
 
-    /**
-     * Служебное поле hibernate
-     */
     @Version
     private Integer version;
 
@@ -41,21 +38,15 @@ public class Person {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Account> accounts;
 
-    public void addAccount(Account account) {
-        getAccounts().add(account);
-        account.setPerson(this);
+     public Person() {
+
     }
 
-    public void removeAccount(Account account) {
-        getAccounts().remove(account);
-        account.setPerson(null);
-    }
-
-    /**
-     * Конструктор для hibernate
-     */
-    public Person() {
-
+    public Person(String name, String secondName, String surname, Date birthday) {
+        this.name = name;
+        this.secondName = secondName;
+        this.surname = surname;
+        this.birthday = birthday;
     }
 
     public Long getId() {
@@ -94,12 +85,15 @@ public class Person {
         this.accounts = accounts;
     }
 
-    public Person(Long id, Integer version, String name, String surname,  Date birthday) {
-        this.id = id;
-        this.version = version;
-        this.name = name;
-        this.surname = surname;
-        this.birthday = birthday;
+    public void addAccount(Account account) {
+        getAccounts().add(account);
+        account.setPerson(this);
     }
+
+    public void removeAccount(Account account) {
+        getAccounts().remove(account);
+        account.setPerson(null);
+    }
+
 
 }

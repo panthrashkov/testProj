@@ -1,5 +1,6 @@
 package ru.rencredit.test.person.service;
 
+import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface PersonService {
      * Сохранить нового клиента
      * @param person - представление клиента
      */
-    void add(PersonView person) ;
+    void add(PersonSave person) ;
 
     /**
      * Получить список всех клиентов
