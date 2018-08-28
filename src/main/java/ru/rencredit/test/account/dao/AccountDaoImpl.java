@@ -1,7 +1,6 @@
 package ru.rencredit.test.account.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.rencredit.test.account.model.Account;
 import ru.rencredit.test.person.model.Person;
 
@@ -26,7 +25,7 @@ public class AccountDaoImpl implements AccountDao {
      * @inheritDoc
      */
     public List<Account> getAccountFiltredList(Account account) {
-        return loadByCriteria(Account account);
+        return loadByCriteria(account);
     }
 
     public List<Account> loadByCriteria(Account account) {
@@ -75,9 +74,16 @@ public class AccountDaoImpl implements AccountDao {
     добавить счет в список
      */
     @Override
-    @Transactional
     public void save(Account account) {
         em.persist(account);
+    }
+
+    @Override
+    public void update(Account account) {
+        Account a = findById(account.getId());
+        a.setBalance(account.getBalance());
+        a.setCurrency(account.getCurrency());
+        a.setName(account.getName());
     }
 
     /*
