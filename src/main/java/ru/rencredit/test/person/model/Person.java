@@ -16,24 +16,25 @@ import java.util.Set;
 public class Person {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
     @Version
     private Integer version;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "second_name")
+    @Column(name = "second_name", length = 50)
     private String secondName;
 
-    @Column(name = "surname")
+    @Column(name = "surname", length = 50, nullable = false)
     private String surname;
 
-    @Column(name = "birthday")
-    private Date birthday;
+    @Column(name = "birth_date", nullable = false)
+    @Temporal(value = TemporalType.DATE)
+    private Date birthDate;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Account> accounts;
@@ -42,27 +43,19 @@ public class Person {
 
     }
 
-    public Person(String name, String secondName, String surname, Date birthday) {
+    public Person(String name, String secondName, String surname, Date birthDate) {
         this.name = name;
         this.secondName = secondName;
         this.surname = surname;
-        this.birthday = birthday;
+        this.birthDate = birthDate;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Integer getVersion() {
         return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public String getName() {
@@ -85,6 +78,23 @@ public class Person {
         this.accounts = accounts;
     }
 
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+
     public void addAccount(Account account) {
         getAccounts().add(account);
         account.setPerson(this);
@@ -94,6 +104,4 @@ public class Person {
         getAccounts().remove(account);
         account.setPerson(null);
     }
-
-
 }

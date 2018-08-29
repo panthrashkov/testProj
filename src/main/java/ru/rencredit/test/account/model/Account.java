@@ -11,23 +11,23 @@ import java.math.BigDecimal;
 public class Account {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
     @Version
     private Integer version;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "balance")
+    @Column(name = "balance", precision = 19, scale = 4, nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "currency")
+    @Column(name = "currency", length = 4, nullable = false)
     private String currency;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
 
@@ -43,16 +43,8 @@ public class Account {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Integer getVersion() {
         return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public String getName() {

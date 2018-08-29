@@ -5,21 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rencredit.test.exception.DateValidationException;
+import org.springframework.util.StringUtils;
+import ru.rencredit.test.person.exception.DateValidationException;
 import ru.rencredit.test.person.dao.PersonDao;
+import ru.rencredit.test.person.exception.PersonNotFoundException;
 import ru.rencredit.test.person.model.Person;
 import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
 
-import javax.validation.constraints.NotNull;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static ru.rencredit.test.person.view.PersonSave.MINIMAL_AGE;
@@ -31,9 +29,7 @@ import static ru.rencredit.test.person.view.PersonSave.MINIMAL_AGE;
 @Slf4j
 public class PersonServiceImpl implements PersonService {
 
-
-
-    private  PersonDao personDao;
+    private PersonDao personDao;
 
     public PersonServiceImpl() {
     }
@@ -43,32 +39,35 @@ public class PersonServiceImpl implements PersonService {
         this.personDao = personDao;
     }
 
-
     /**
      * @inheritDoc
      */
     @Transactional(readOnly = true)
     @Override
     public PersonView loadById(Long id) {
-        PersonView personView = new PersonView();
-        try {
-            Person person = personDao.loadById(id);
-            personView.id = person.getId();
-            personView.name = person.getName();
-            personView.surname = person.getSurname();
-        } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("Организации с таким ID нет в базе данных");
-        }
-        return personView;
+        Person person = personDao.loadById(id);
+        checkPersonExistById(id, person);
+        return new PersonView(person.getId(), person.getName(), person.getSecondName(), person.getSurname(),
+                person.getBirthDate());
+
     }
 
 
-     /**
+    /**
      * @inheritDoc
      */
-     @Transactional
+    @Transactional
     @Override
-    public void update(PersonView person)  {
+    public void update(PersonView personView) {
+        validate(personView);
+        Person person = personDao.loadById(personView.getId());
+        checkPersonExistById(personView.getId(), person);
+        person.setName(personView.getName());
+        person.setSurname(personView.getSurname());
+        person.setBirthDate(personView.getBirthDate());
+        if (!StringUtils.isEmpty(personView.getSecondName())) {
+            person.setSecondName(personView.getSecondName());
+        }
 
     }
 
@@ -79,7 +78,8 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void add(PersonSave personSave) {
         validate(personSave);
-        personDao.save(new Person(personSave.name, personSave.secondName, personSave.surname, personSave.birthDate ));
+        personDao.save(new Person(personSave.getName(), personSave.getSecondName(), personSave.getSurname(),
+                personSave.getBirthDate()));
     }
 
 
@@ -88,19 +88,11 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PersonView> getAllPerson() {
-        List<Person> all = personDao.getAllPerson();
-
-        return all.stream()
-                .map(mapPerson())
+    public List<PersonView> getAll() {
+        return personDao.getAll()
+                .stream()
+                .map(p -> new PersonView(p.getId(), p.getName(), p.getSecondName(), p.getSurname(), p.getBirthDate()))
                 .collect(Collectors.toList());
-    }
-    private Function<Person, PersonView> mapPerson() {
-        return p -> {
-            PersonView view = new PersonView();
-
-            return view;
-        };
     }
 
     /**
@@ -109,26 +101,24 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public void delete(Long id) {
-        try {
-            personDao.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("Организации с таким ID нет в БД");
-        }
+        Person person = personDao.loadById(id);
+        checkPersonExistById(id, person);
+        personDao.delete(person);
     }
 
     private void validate(PersonSave personSave) {
-        validateBirthDate(personSave.birthDate);
+        validateBirthDate(personSave.getBirthDate());
     }
 
     private void validateBirthDate(Date birthDate) {
         boolean isMinAgeAllowed = birthDate.before(convertToDate(LocalDate.now().minusYears(MINIMAL_AGE)));
-        boolean isMaxAgeAllowed = birthDate.after(convertToDate(LocalDate.of( 1900, 1, 1)));
-        if(!isMinAgeAllowed  || !isMaxAgeAllowed){
+        boolean isMaxAgeAllowed = birthDate.after(convertToDate(LocalDate.of(1900, 1, 1)));
+        if (!isMinAgeAllowed || !isMaxAgeAllowed) {
             String message;
-            if(!isMinAgeAllowed) {
-                 message = MessageFormat.format("Банк обслуживает клиентов старше {0} лет", MINIMAL_AGE);
-            }else{
-                 message = MessageFormat.format("Дата {0} не прошла валидацию", birthDate.toString());
+            if (!isMinAgeAllowed) {
+                message = MessageFormat.format("Банк обслуживает клиентов старше {0} лет", MINIMAL_AGE);
+            } else {
+                message = MessageFormat.format("Дата {0} не прошла валидацию", birthDate.toString());
             }
             log.error(message);
             throw new DateValidationException(message);
@@ -139,6 +129,15 @@ public class PersonServiceImpl implements PersonService {
         return java.util.Date.from(dateToConvert.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
+    }
+
+
+    private void checkPersonExistById(Long id, Person person) {
+        if (person == null) {
+            String message = MessageFormat.format("Клиента с id {0} нет в базе данных!", id);
+            log.error(message);
+            throw new PersonNotFoundException(message);
+        }
     }
 
 }

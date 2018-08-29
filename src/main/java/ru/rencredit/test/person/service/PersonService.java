@@ -33,7 +33,7 @@ public interface PersonService {
      * Получить список всех клиентов
      * @return List<PersonView> список клиентов
      */
-    List<PersonView> getAllPerson();
+    List<PersonView> getAll();
 
     /**
      * Удалить клиента по ID

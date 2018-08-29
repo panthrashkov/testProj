@@ -27,47 +27,54 @@ public class PersonController {
 
     /**
      * Получить список всех клиентов
+     *
      * @return List<PersonView> список клиентов
      */
-    @ApiOperation(value = "api/person/all", nickname = "getAllPerson", httpMethod = "GET")
+    @ApiOperation(value = "api/person/all", nickname = "getAll", httpMethod = "GET")
     @GetMapping("/all")
-    public List<PersonView> getAllPerson() { return personService.getAllPerson(); }
+    public List<PersonView> getAll() {
+        return personService.getAll();
+    }
 
     /**
      * Получить клиента по id
+     *
      * @param id - значение параметра
      * @return PersonSave представление клиента
      */
     @ApiOperation(value = "api/person/{id}", nickname = "getPersonById", httpMethod = "GET")
     @GetMapping("/{id}")
-    public PersonView loadById (@PathVariable Long id) {
+    public PersonView loadById(@PathVariable Long id) {
         return personService.loadById(id);
     }
 
     /**
      * Обновить данные клиента
+     *
      * @param person - представление клиента
      */
     @ApiOperation(value = "/api/person/update", nickname = "update", httpMethod = "POST")
     @PostMapping("/update")
     public void update(@Valid @RequestBody PersonView person, BindingResult bindingResult) {
-            BindingResultValidation.validate(bindingResult);
-            personService.update(person);
+        BindingResultValidation.validate(bindingResult);
+        personService.update(person);
     }
 
     /**
      * Сохранить нового клиента
+     *
      * @param person - представление клиента
      */
     @ApiOperation(value = "api/person/save", nickname = "save", httpMethod = "POST")
     @PostMapping("/save")
-    public void add(@Valid @RequestBody PersonSave person, BindingResult bindingResult){
+    public void add(@Valid @RequestBody PersonSave person, BindingResult bindingResult) {
         BindingResultValidation.validate(bindingResult);
         personService.add(person);
     }
 
     /**
      * Удалить клиента по ID
+     *
      * @param id - id клиента
      */
     @ApiOperation(value = "deletePerson", nickname = "deletePerson", httpMethod = "POST")

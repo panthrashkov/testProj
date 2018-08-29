@@ -14,7 +14,7 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     protected ExceptionView onException(Exception e) {
-        log.debug(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return new ExceptionView(e.getMessage());
     }
 
