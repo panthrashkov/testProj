@@ -6,27 +6,31 @@ import java.util.List;
 
 public interface AccountDao {
 
-    /*
-    получить счет по ID клиента
+    /**
+     * Получить список счетов клиента
+     * @param account - модель счета
+     * @return List<Account> список счетов
      */
     List<Account> getAccountFiltredList(Account account);
 
-    /*
-    получить счет по ID
+    /**
+     * Получить счет по id
+     * @param id - идентификатор счета
+     * @return Account - модель счета
      */
     Account findById(Long id);
 
-    /*
-    добавить счет в список
+    /**
+     * Добавить счет
+     * @param account - идентификатор клиента
      */
     void save(Account account);
 
-    void update(Account account);
-
-    /*
-    удалить счет по ID
+    /**
+     * Удалить счет
+     * @param account - идентификатор счета
      */
-    void delete(Long id);
+    void delete(Account account);
 
 
 }

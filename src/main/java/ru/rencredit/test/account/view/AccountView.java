@@ -1,27 +1,22 @@
 package ru.rencredit.test.account.view;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import io.swagger.annotations.ApiModelProperty;
-
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class AccountView {
+@Getter
+@Setter
+@NoArgsConstructor
+public class AccountView extends AccountSave {
 
-    @ApiModelProperty(hidden = true)
-    public Long id;
+    @NotNull(message = "Поле 'id' не может быть пустым")
+    private Long id;
 
-    public String name;
-
-    public BigDecimal balance;
-
-    public String currency;
-
-
-    public AccountView(Long id, String name, BigDecimal balance, String currency) {
+    public AccountView(Long id, String name, BigDecimal balance, String  currency) {
+        super(name, balance, currency);
         this.id = id;
-        this.name = name;
-        this.balance = balance;
-        this.currency = currency;
     }
-
 }

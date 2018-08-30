@@ -3,6 +3,8 @@ package ru.rencredit.test.account.controller;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import ru.rencredit.test.account.service.AccountService;
+import ru.rencredit.test.account.view.AccountRequest;
+import ru.rencredit.test.account.view.AccountSave;
 import ru.rencredit.test.account.view.AccountView;
 
 import java.util.List;
@@ -21,19 +23,19 @@ public class AccountController {
 
     /**
      * Получить список счетов клиента
-     * @param accountView - представление счета
-     * @return List<AccountView> список представлений счета
+     * @param accountRequest - представление счета
+     * @return List<AccountSave> список представлений счета
      */
     @ApiOperation(value = "/api/account/list", nickname = "/api/person", httpMethod = "POST")
     @PostMapping("/api/account/list")
-    public List<AccountView> getAccountListByPersonId(@RequestBody AccountView accountView) {
-        return accountService.getAccountByOrgId(accountView);
+    public List<AccountView> getAccountListByPersonId(@RequestBody AccountRequest accountRequest) {
+        return accountService.getAccountByOrgId(accountRequest);
     }
 
     /**
      * Получить счет по id
      * @param id - идентификатор счета
-     * @return AccountView - представление счета
+     * @return AccountSave - представление счета
      */
     @ApiOperation(value = "/api/account/{id}", nickname = "получить счет по ID", httpMethod = "GET")
     @GetMapping("/{id}")
@@ -59,7 +61,7 @@ public class AccountController {
     @ApiOperation(value = "api/account/save", nickname = "api/account/save",
             httpMethod = "POST")
     @PostMapping("/save")
-    public void add( @PathVariable Long personId, @RequestBody AccountView accountView) {
+    public void add( @PathVariable Long personId, @RequestBody AccountSave accountView) {
         accountService.add(personId, accountView);
     }
 

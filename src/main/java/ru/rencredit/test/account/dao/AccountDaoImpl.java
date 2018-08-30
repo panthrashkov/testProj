@@ -2,14 +2,16 @@ package ru.rencredit.test.account.dao;
 
 import org.springframework.stereotype.Repository;
 import ru.rencredit.test.account.model.Account;
+import ru.rencredit.test.account.model.Account_;
 import ru.rencredit.test.person.model.Person;
+import ru.rencredit.test.person.model.Person_;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -28,74 +30,39 @@ public class AccountDaoImpl implements AccountDao {
         return loadByCriteria(account);
     }
 
-    public List<Account> loadByCriteria(Account account) {
-        CriteriaQuery<Account> criteria = buildCriteria(account.getPerson(), account.getName(),
-                account.getBalance(), account.getCurrency());
-        TypedQuery<Account> query = em.createQuery(criteria);
+    private List<Account> loadByCriteria(Account account) {
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Account> criteriaQuery = criteriaBuilder.createQuery(Account.class);
+        Root<Account> accountRoot = criteriaQuery.from(Account.class);
+        Root<Person> personRoot = criteriaQuery.from(Person.class);
+
+        Predicate predicate = criteriaBuilder.equal(personRoot.get(Person_.id), account.getPerson().getId());
+        if (account.getName() != null){
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(accountRoot.get(Account_.name), "%" + account.getName() + "%"));
+        }
+        if (account.getCurrency() != null){
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(accountRoot.get(Account_.currency), account.getCurrency()));
+        }
+        criteriaQuery.multiselect(accountRoot, personRoot).where(predicate);
+        TypedQuery<Account> query = em.createQuery(criteriaQuery);
         return query.getResultList();
     }
 
-    private CriteriaQuery<Account> buildCriteria(Person person, String name, BigDecimal phoneAccount, String isActive) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Account> cq = builder.createQuery(Account.class);
-        CriteriaBuilder qb = em.getCriteriaBuilder();
-
-        Root<Person> personRoot = cq.from(Person.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(qb.equal(personRoot.get("id"), person.getId()));
-
-        Join<Person, Account> join = personRoot.join("accounts");
-
-        if (name != null) {
-            predicates.add(qb.equal(join.get("name"), name));
-        }
-        if (phoneAccount != null) {
-            predicates.add(qb.equal(join.get("phoneAccount"), phoneAccount));
-        }
-        if (isActive != null) {
-            predicates.add(qb.equal(join.get("isActive"), isActive));
-        }
-        cq.select(join).where(predicates.toArray(new Predicate[]{}));
-        return cq;
-    }
-
-    /*
-    получить офис по ID
-    */
     @Override
     public Account findById(Long id) {
-        Query query = em.createQuery("SELECT o FROM Account o WHERE o.id = :id");
-        query.setParameter("id", id);
-        return (Account)query.getSingleResult();
+        return em.find(Account.class, id);
     }
 
-    /*
-    добавить счет в список
-     */
     @Override
     public void save(Account account) {
         em.persist(account);
     }
 
     @Override
-    public void update(Account account) {
-        Account a = findById(account.getId());
-        a.setBalance(account.getBalance());
-        a.setCurrency(account.getCurrency());
-        a.setName(account.getName());
-    }
-
-    /*
-    получить список всех счето
-     */
-
-
-    @Override
-    public void delete(Long id) {
-        Query query = em.createQuery("SELECT o FROM Account o WHERE o.id = :id");
-        query.setParameter("id", id);
-        Account accountRemove = (Account)query.getSingleResult();
-        em.remove(accountRemove);
+    public void delete(Account account) {
+        if (!em.contains(account)) {
+            account = em.merge(account);
+        }
+        em.remove(account);
     }
 }

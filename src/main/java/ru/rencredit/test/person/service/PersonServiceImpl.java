@@ -2,13 +2,11 @@ package ru.rencredit.test.person.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import ru.rencredit.test.person.exception.DateValidationException;
 import ru.rencredit.test.person.dao.PersonDao;
-import ru.rencredit.test.person.exception.PersonNotFoundException;
+import ru.rencredit.test.person.exception.DateValidationException;
 import ru.rencredit.test.person.model.Person;
 import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
@@ -21,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.rencredit.test.person.view.PersonSave.MINIMAL_AGE;
+import static ru.rencredit.test.utils.CommonValidation.checkPersonExistById;
 
 /**
  * {@inheritDoc}
@@ -131,13 +130,5 @@ public class PersonServiceImpl implements PersonService {
                 .toInstant());
     }
 
-
-    private void checkPersonExistById(Long id, Person person) {
-        if (person == null) {
-            String message = MessageFormat.format("Клиента с id {0} нет в базе данных!", id);
-            log.error(message);
-            throw new PersonNotFoundException(message);
-        }
-    }
 
 }
