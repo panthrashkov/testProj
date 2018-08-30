@@ -3,7 +3,6 @@ package ru.rencredit.test.account.dao;
 import org.springframework.stereotype.Repository;
 import ru.rencredit.test.account.model.Account;
 import ru.rencredit.test.account.model.Account_;
-import ru.rencredit.test.person.model.Person;
 import ru.rencredit.test.person.model.Person_;
 
 import javax.persistence.EntityManager;
@@ -34,16 +33,15 @@ public class AccountDaoImpl implements AccountDao {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Account> criteriaQuery = criteriaBuilder.createQuery(Account.class);
         Root<Account> accountRoot = criteriaQuery.from(Account.class);
-        Root<Person> personRoot = criteriaQuery.from(Person.class);
 
-        Predicate predicate = criteriaBuilder.equal(personRoot.get(Person_.id), account.getPerson().getId());
+        Predicate predicate = criteriaBuilder.equal(accountRoot.get(Account_.person).get(Person_.id), account.getPerson().getId());
         if (account.getName() != null){
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(accountRoot.get(Account_.name), "%" + account.getName() + "%"));
         }
         if (account.getCurrency() != null){
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(accountRoot.get(Account_.currency), account.getCurrency()));
         }
-        criteriaQuery.multiselect(accountRoot, personRoot).where(predicate);
+        criteriaQuery.select(accountRoot).where(predicate);
         TypedQuery<Account> query = em.createQuery(criteriaQuery);
         return query.getResultList();
     }
