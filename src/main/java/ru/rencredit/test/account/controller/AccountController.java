@@ -1,15 +1,18 @@
 package ru.rencredit.test.account.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.rencredit.test.account.service.AccountService;
 import ru.rencredit.test.account.view.AccountRequest;
 import ru.rencredit.test.account.view.AccountSave;
 import ru.rencredit.test.account.view.AccountView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ru.rencredit.test.common.CommonValidation.validate;
 
 @RestController
 @RequestMapping(value = "/api/account", produces = APPLICATION_JSON_VALUE)
@@ -49,7 +52,8 @@ public class AccountController {
      */
     @ApiOperation(value = "/api/account/update", nickname = "update", httpMethod = "POST")
     @PostMapping("/update")
-    public void update(@RequestBody AccountView account) {
+    public void update(@Valid @RequestBody AccountView account, BindingResult bindingResult) {
+        validate(bindingResult);
         accountService.update(account);
     }
 
@@ -61,13 +65,16 @@ public class AccountController {
     @ApiOperation(value = "api/account/save", nickname = "api/account/save",
             httpMethod = "POST")
     @PostMapping("/save")
-    public void add( @PathVariable Long personId, @RequestBody AccountSave accountView) {
+    public void add( @PathVariable Long personId,
+                     @Valid @RequestBody AccountSave accountView,
+                     BindingResult bindingResult) {
+        validate(bindingResult);
         accountService.add(personId, accountView);
     }
 
     /**
      * Удалить счет по id
-     * @param id
+     * @param id идентификатор счета
      */
     @ApiOperation(value = "/api/account/delete/{id}", nickname = "deleteAccount", httpMethod = "POST")
     @PostMapping("/delete/{id}")

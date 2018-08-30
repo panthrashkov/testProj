@@ -29,6 +29,33 @@ public class AccountDaoImpl implements AccountDao {
         return loadByCriteria(account);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Account findById(Long id) {
+        return em.find(Account.class, id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void save(Account account) {
+        em.persist(account);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void delete(Account account) {
+        if (!em.contains(account)) {
+            account = em.merge(account);
+        }
+        em.remove(account);
+    }
+
     private List<Account> loadByCriteria(Account account) {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Account> criteriaQuery = criteriaBuilder.createQuery(Account.class);
@@ -44,23 +71,5 @@ public class AccountDaoImpl implements AccountDao {
         criteriaQuery.select(accountRoot).where(predicate);
         TypedQuery<Account> query = em.createQuery(criteriaQuery);
         return query.getResultList();
-    }
-
-    @Override
-    public Account findById(Long id) {
-        return em.find(Account.class, id);
-    }
-
-    @Override
-    public void save(Account account) {
-        em.persist(account);
-    }
-
-    @Override
-    public void delete(Account account) {
-        if (!em.contains(account)) {
-            account = em.merge(account);
-        }
-        em.remove(account);
     }
 }

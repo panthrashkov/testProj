@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.rencredit.test.person.view.PersonSave.MINIMAL_AGE;
-import static ru.rencredit.test.utils.CommonValidation.checkPersonExistById;
+import static ru.rencredit.test.common.CommonValidation.checkPersonExistById;
 
 /**
  * {@inheritDoc}

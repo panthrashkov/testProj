@@ -1,4 +1,4 @@
-package ru.rencredit.test.utils;
+package ru.rencredit.test.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rencredit.test.person.service.PersonService;
 import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
-import ru.rencredit.test.utils.CommonValidation;
+import ru.rencredit.test.common.CommonValidation;
 
 import javax.validation.Valid;
 import java.util.List;

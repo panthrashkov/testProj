@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static ru.rencredit.test.utils.CommonValidation.checkPersonExistById;
+import static ru.rencredit.test.common.CommonValidation.checkPersonExistById;
 
 @Service
 @Slf4j
@@ -36,15 +36,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public List<AccountView> getAccountByOrgId(AccountRequest accountRequest) {
-        Account account = new Account(accountRequest.getName(), accountRequest.getBalance(),
-                accountRequest.getCurrency());
+        Account account = requestToAccount().apply(accountRequest);
         Person person = personDao.loadById(accountRequest.getPersonId());
         checkPersonExistById(accountRequest.getPersonId(), person);
         account.setPerson(person);
         return accountDao
                 .getAccountFiltredList(account)
                 .stream()
-                .map(mapAccount())
+                .map(accountToView())
                 .collect(Collectors.toList());
     }
 
@@ -53,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountView findById(Long id) {
         Account account = accountDao.findById(id);
         checkAccountExistById(id, account);
-        return mapAccount().apply(account);
+        return accountToView().apply(account);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void add(Long personId, AccountSave accountSave) {
-        Account account = validate(accountSave);
+        Account account = viewToAccount().apply(accountSave);
         Person person = personDao.loadById(personId);
         checkPersonExistById(personId, person);
         person.addAccount(account);
@@ -83,14 +82,17 @@ public class AccountServiceImpl implements AccountService {
         accountDao.delete(account);
     }
 
-    private Account validate(AccountSave accountSave) {
-        return null;
-    }
-
-    private Function<Account, AccountView> mapAccount() {
+    private Function<Account, AccountView> accountToView() {
         return p -> new AccountView(p.getId(), p.getName(), p.getBalance(), p.getCurrency());
     }
 
+    private Function<AccountSave, Account> viewToAccount() {
+        return p -> new Account(p.getName(), p.getBalance(), p.getCurrency());
+    }
+
+    private Function<AccountRequest, Account> requestToAccount() {
+        return p -> new Account(p.getName(), p.getBalance(), p.getCurrency());
+    }
 
     private  void checkAccountExistById(Long id, Account account) {
         if (account == null) {
