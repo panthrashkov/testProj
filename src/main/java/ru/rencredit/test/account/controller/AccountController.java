@@ -7,6 +7,7 @@ import ru.rencredit.test.account.service.AccountService;
 import ru.rencredit.test.account.view.AccountRequest;
 import ru.rencredit.test.account.view.AccountSave;
 import ru.rencredit.test.account.view.AccountView;
+import ru.rencredit.test.common.ReturnSuccess;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,6 +53,7 @@ public class AccountController {
      */
     @ApiOperation(value = "/api/account/update", nickname = "update", httpMethod = "POST")
     @PostMapping("/update")
+    @ReturnSuccess
     public void update(@Valid @RequestBody AccountView account, BindingResult bindingResult) {
         validate(bindingResult);
         accountService.update(account);
@@ -65,6 +67,7 @@ public class AccountController {
     @ApiOperation(value = "api/account/save", nickname = "api/account/save",
             httpMethod = "POST")
     @PostMapping("/save")
+    @ReturnSuccess
     public void add( @PathVariable Long personId,
                      @Valid @RequestBody AccountSave accountView,
                      BindingResult bindingResult) {
@@ -78,6 +81,7 @@ public class AccountController {
      */
     @ApiOperation(value = "/api/account/delete/{id}", nickname = "deleteAccount", httpMethod = "POST")
     @PostMapping("/delete/{id}")
+    @ReturnSuccess
     public void delete(@PathVariable Long id) {
         accountService.delete(id);
     }

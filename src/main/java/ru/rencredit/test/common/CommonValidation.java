@@ -10,11 +10,11 @@ import java.text.MessageFormat;
 @Slf4j
 public class CommonValidation {
 
-    public static final String REGEX_PATTERN_NAME = "^[a-zA-Z0-9а-яА-Я ,.\"]+$";
+    public static final String REGEX_PATTERN_NAME = "^[a-zA-Zа-яА-Я ,.\"]+$";
 
     public static void validate(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new RuntimeException(bindingResult.getAllErrors().get(0).getDefaultMessage());
+            throw new BadRequestException(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
     }
 

@@ -11,9 +11,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ExceptionController {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ExceptionView onException(Exception e) {
+    public ExceptionView systemExceptionHandler(Exception exception){
+        log.error("Не удалось выполнить действие. Обратитесь к разработчикам.", exception);
+        return new ExceptionView(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    protected ExceptionView userExceptionHandler(Exception e) {
         log.error(e.getMessage(), e);
         return new ExceptionView(e.getMessage());
     }

@@ -1,6 +1,8 @@
 package ru.rencredit.test.person.exception;
 
-public class PersonNotFoundException extends RuntimeException {
+import ru.rencredit.test.common.BadRequestException;
+
+public class PersonNotFoundException extends BadRequestException {
     public PersonNotFoundException(String message){
         super(message);
     }

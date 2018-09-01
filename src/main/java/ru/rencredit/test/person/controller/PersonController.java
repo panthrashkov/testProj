@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.rencredit.test.common.ReturnSuccess;
 import ru.rencredit.test.person.service.PersonService;
 import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/person", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/person", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class PersonController {
 
     private final PersonService personService;
@@ -55,6 +56,7 @@ public class PersonController {
      */
     @ApiOperation(value = "/api/person/update", nickname = "update", httpMethod = "POST")
     @PostMapping("/update")
+    @ReturnSuccess
     public void update(@Valid @RequestBody PersonView person, BindingResult bindingResult) {
         CommonValidation.validate(bindingResult);
         personService.update(person);
@@ -67,6 +69,7 @@ public class PersonController {
      */
     @ApiOperation(value = "api/person/save", nickname = "save", httpMethod = "POST")
     @PostMapping("/save")
+    @ReturnSuccess
     public void add(@Valid @RequestBody PersonSave person, BindingResult bindingResult) {
         CommonValidation.validate(bindingResult);
         personService.add(person);

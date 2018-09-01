@@ -21,6 +21,7 @@ import java.util.Date;
 public class PersonSave {
 
     public static final int MINIMAL_AGE = 14;
+    public static final int MAXIMUM_AGE = 90;
 
     @NotNull(message = "Поле 'name' не может быть пустым")
     @Size(min = 1, max = 50, message = "Размер 'name' должен быть от 1 до 50 символов")

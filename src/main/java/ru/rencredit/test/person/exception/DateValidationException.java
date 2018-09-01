@@ -1,6 +1,8 @@
 package ru.rencredit.test.person.exception;
 
-public class DateValidationException extends RuntimeException {
+import ru.rencredit.test.common.BadRequestException;
+
+public class DateValidationException extends BadRequestException {
     public DateValidationException(String message){
         super(message);
     }

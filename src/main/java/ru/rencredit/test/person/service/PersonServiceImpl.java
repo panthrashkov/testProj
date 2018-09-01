@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.rencredit.test.person.view.PersonSave.MAXIMUM_AGE;
 import static ru.rencredit.test.person.view.PersonSave.MINIMAL_AGE;
 import static ru.rencredit.test.common.CommonValidation.checkPersonExistById;
 
@@ -109,15 +110,15 @@ public class PersonServiceImpl implements PersonService {
         validateBirthDate(personSave.getBirthDate());
     }
 
-    private void validateBirthDate(Date birthDate) {
+    void validateBirthDate(Date birthDate) {
         boolean isMinAgeAllowed = birthDate.before(convertToDate(LocalDate.now().minusYears(MINIMAL_AGE)));
-        boolean isMaxAgeAllowed = birthDate.after(convertToDate(LocalDate.of(1900, 1, 1)));
+        boolean isMaxAgeAllowed = birthDate.after(convertToDate(LocalDate.now().minusYears(MAXIMUM_AGE)));
         if (!isMinAgeAllowed || !isMaxAgeAllowed) {
             String message;
             if (!isMinAgeAllowed) {
                 message = MessageFormat.format("Банк обслуживает клиентов старше {0} лет", MINIMAL_AGE);
             } else {
-                message = MessageFormat.format("Дата {0} не прошла валидацию", birthDate.toString());
+                message = MessageFormat.format("Банк обслуживает клиентов младше {0} лет", MAXIMUM_AGE);
             }
             log.error(message);
             throw new DateValidationException(message);
@@ -125,7 +126,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private Date convertToDate(LocalDate dateToConvert) {
-        return java.util.Date.from(dateToConvert.atStartOfDay()
+        return java.util.Date.from(dateToConvert
+                .atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
