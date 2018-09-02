@@ -58,8 +58,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void update(AccountView accountView) {
-        Account account = accountDao.findById(accountView.getId());
-        checkAccountExistById(accountView.getId(), account);
+        Account account = accountDao.findById(accountView.getPersonOrAccountId());
+        checkAccountExistById(accountView.getPersonOrAccountId(), account);
         account.setName(accountView.getName());
         account.setBalance(accountView.getBalance());
         account.setCurrency(accountView.getCurrency());
@@ -76,6 +76,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Account account = accountDao.findById(id);
         checkAccountExistById(id, account);

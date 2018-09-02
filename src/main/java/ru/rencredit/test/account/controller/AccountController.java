@@ -61,18 +61,16 @@ public class AccountController {
 
     /**
      * Добавить счет
-     * @param personId - идентификатор клиента
      * @param accountView - представление счета
      */
     @ApiOperation(value = "api/account/save", nickname = "api/account/save",
             httpMethod = "POST")
     @PostMapping("/save")
     @ReturnSuccess
-    public void add( @PathVariable Long personId,
-                     @Valid @RequestBody AccountSave accountView,
+    public void add( @Valid @RequestBody AccountView accountView,
                      BindingResult bindingResult) {
         validate(bindingResult);
-        accountService.add(personId, accountView);
+        accountService.add(accountView.getPersonOrAccountId(), accountView);
     }
 
     /**

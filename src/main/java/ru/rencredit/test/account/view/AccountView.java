@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 public class AccountView extends AccountSave {
 
     @NotNull(message = "Поле 'id' не может быть пустым")
-    private Long id;
+    private Long personOrAccountId;
 
     public AccountView(Long id, String name, BigDecimal balance, String  currency) {
         super(name, balance, currency);
-        this.id = id;
+        this.personOrAccountId = id;
     }
 }
