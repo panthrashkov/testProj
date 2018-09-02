@@ -2,14 +2,13 @@ package ru.rencredit.test.person.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.rencredit.test.common.CommonValidation;
 import ru.rencredit.test.common.ReturnSuccess;
 import ru.rencredit.test.person.service.PersonService;
 import ru.rencredit.test.person.view.PersonSave;
 import ru.rencredit.test.person.view.PersonView;
-import ru.rencredit.test.common.CommonValidation;
 
 import javax.validation.Valid;
 import java.util.List;
