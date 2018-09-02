@@ -16,7 +16,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/person", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/person", produces = APPLICATION_JSON_VALUE)
 public class PersonController {
 
     private final PersonService personService;
@@ -55,7 +55,7 @@ public class PersonController {
      * @param person - представление клиента
      */
     @ApiOperation(value = "/api/person/update", nickname = "update", httpMethod = "POST")
-    @PostMapping("/update")
+    @PostMapping(value = "/update", consumes = APPLICATION_JSON_VALUE)
     @ReturnSuccess
     public void update(@Valid @RequestBody PersonView person, BindingResult bindingResult) {
         CommonValidation.validate(bindingResult);
@@ -68,7 +68,7 @@ public class PersonController {
      * @param person - представление клиента
      */
     @ApiOperation(value = "api/person/save", nickname = "save", httpMethod = "POST")
-    @PostMapping("/save")
+    @PostMapping(value = "/save" , consumes = APPLICATION_JSON_VALUE)
     @ReturnSuccess
     public void add(@Valid @RequestBody PersonSave person, BindingResult bindingResult) {
         CommonValidation.validate(bindingResult);

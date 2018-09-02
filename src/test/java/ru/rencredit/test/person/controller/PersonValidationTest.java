@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 public class PersonValidationTest {
 
-
     private static final int STRING_SIZE = 51;
     private final Long ID = 1L;
     private final String NAME = "name";
