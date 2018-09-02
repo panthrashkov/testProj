@@ -28,7 +28,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Обновление и получение данных клиентов и их счетов")
-                .contact("https://github.com/panthrashkov/regmeTest")
+                .contact("https://github.com/panthrashkov/testProj")
                 .version("1.0")
                 .build();
     }

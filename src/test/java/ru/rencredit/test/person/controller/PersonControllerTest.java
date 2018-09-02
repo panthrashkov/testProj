@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -25,12 +27,14 @@ import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = PersonController.class)
+@WithMockUser(username = "u", authorities = { "USER" })
 public class PersonControllerTest {
 
     private final Long ID = 1L;
@@ -100,7 +104,7 @@ public class PersonControllerTest {
     public void update() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
-                .post("/api/person/update")
+                .post("/api/person/update").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(personToJson(personView));
 
@@ -120,7 +124,7 @@ public class PersonControllerTest {
     public void updateError() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
-                .post("/api/person/update")
+                .post("/api/person/update").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(personToJson(personErrorView));
 
@@ -140,7 +144,7 @@ public class PersonControllerTest {
     public void save() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
-                .post("/api/person/save")
+                .post("/api/person/save").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(personToJson(personView));
 
@@ -160,7 +164,7 @@ public class PersonControllerTest {
     public void saveError() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
-                .post("/api/person/save")
+                .post("/api/person/save").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(personToJson(personErrorView));
 
